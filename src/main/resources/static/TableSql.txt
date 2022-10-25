@@ -1,0 +1,14 @@
+create table Clients (
+username varchar(36),
+email varchar(50),
+Id uniqueidentifier default newID() not NUll primary key,
+LogType varchar(15)
+)
+
+create table [Log] (
+[message] varchar(1024) not null,
+logType varchar (20) not null,
+date DATE not null,
+clientId varchar(36)
+)
+
