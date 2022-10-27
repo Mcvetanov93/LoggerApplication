@@ -1,4 +1,4 @@
-package Model;
+package com.example.Project.Model;
 
 
 import java.util.UUID;
@@ -10,8 +10,8 @@ public class Client {
     private String email;
     private String password;
 
-    public Client( String username, String email, String password) {
-        this.uuid = UUID.randomUUID();
+    public Client( UUID uuid,String username, String email, String password) {
+        this.uuid = uuid;
         this.username = username;
         this.email = email;
         this.password = password;

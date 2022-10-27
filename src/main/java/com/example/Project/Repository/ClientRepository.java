@@ -1,11 +1,14 @@
-package Repository;
+package com.example.Project.Repository;
 
-import Model.Client;
+import com.example.Project.Model.Client;
+import com.example.Project.Model.LogInModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,15 +19,18 @@ public class ClientRepository implements ClientInterface {
 
     @Override
     public boolean checkForDuplicateUsername(Client client) {
-        String sql = "SELECT username FROM Clients";
+        String sql = "SELECT username as username FROM Clients";
         List<Client> listOfUsernames = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Client.class));
+        System.out.println(listOfUsernames);
+        System.out.println(client);
         boolean condition = true;
         for (var user : listOfUsernames) {
-            if (user.getEmail().equalsIgnoreCase(client.getusername())) {
+            if (user.getusername().equalsIgnoreCase(client.getusername())) {
                 condition = false;
                 break;
             }
         }
+
 
         return condition;
     }
@@ -51,26 +57,54 @@ public class ClientRepository implements ClientInterface {
         if (!matcher.matches()) {
             condition = false;
         }
+
         return condition;
+
     }
 
     @Override
     public void registerClient(Client client) {
 
-        String sql = "Insert into Clients (username,email,Id) values ('"
-                + client.getusername() + "','" + client.getEmail() + "','" + client.getUuid() + "')";
+
+        String sql = "Insert into Clients (username,email,Id,password) values ('"
+                + client.getusername() + "','" + client.getEmail() + "','" + UUID.randomUUID() + "','" + client.getPassword() + "')";
         jdbcTemplate.execute(sql);
+
 
     }
 
     @Override
-    public String clientLogIn(String email, String password) {
-        return "";
+    public String returnToken(LogInModel logInModel) {
+        String sql="SELECT * FROM Clients";
+        List <Client> listOfClients=jdbcTemplate.query(sql,BeanPropertyRowMapper.newInstance(Client.class));
+        for (var clients:listOfClients){
+            if (logInModel.getEmailOrUsername().equalsIgnoreCase(clients.getEmail())||logInModel.getEmailOrUsername().equalsIgnoreCase(clients.getusername())){
+                return clients.getUuid().toString();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean clientLogIn(LogInModel logInModel) {
+        String sql="SELECT * FROM Clients";
+        List <Client> listOfClients=jdbcTemplate.query(sql,BeanPropertyRowMapper.newInstance(Client.class));
+        boolean condition=false;
+        //Checking if username or email matches database,if so checking for matching passwords
+        for (var clients :listOfClients){
+            if ((logInModel.getEmailOrUsername().equalsIgnoreCase(clients.getEmail())||logInModel.getEmailOrUsername().equalsIgnoreCase(clients.getusername()))&&logInModel.getPassword().equalsIgnoreCase(clients.getPassword())){
+                condition=true;
+                break;
+            }
+        }
+
+
+       return condition;
     }
 
     @Override
     public List<Client> getallclients() {
-        String sql = "select * from Clients";
+        String sql = "select username as username, email as email, Id as Id, password as password from Clients";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Client.class));
     }
 }

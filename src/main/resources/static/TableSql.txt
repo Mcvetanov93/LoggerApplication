@@ -1,8 +1,7 @@
 create table Clients (
-username varchar(36),
-email varchar(50),
-Id uniqueidentifier default newID() not NUll primary key,
-LogType varchar(15)
+username varchar(36) not null,
+email varchar(50) not null,
+Id uniqueidentifier default newID() not NUll primary key
 )
 
 create table [Log] (

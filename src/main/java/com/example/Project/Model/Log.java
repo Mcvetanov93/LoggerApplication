@@ -1,10 +1,8 @@
-package Model;
+package com.example.Project.Model;
 
 
 import java.time.LocalDate;
 import java.util.UUID;
-
-import static javax.persistence.GenerationType.AUTO;
 
 
 public class Log {
