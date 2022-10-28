@@ -35,6 +35,7 @@ public class LogController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Created");
     }
 
+    @GetMapping
     public ResponseEntity<?> getLogs(@RequestParam(value="message",required = false) String message,
                                      @RequestParam(value = "logType", required = false) Integer logType,
                                      @RequestParam(value = "firstDate", required = false) String firstDate,
