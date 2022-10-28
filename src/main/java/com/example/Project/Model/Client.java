@@ -10,12 +10,17 @@ public class Client {
     private String email;
     private String password;
 
-    public Client( UUID uuid,String username, String email, String password) {
+    public Client(UUID uuid, String username, String email, String password, int count) {
         this.uuid = uuid;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.count = count;
     }
+
+    private int count;
+
+
 
     public Client() {
     }
@@ -34,6 +39,10 @@ public class Client {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getCount() {
+        return count;
     }
 
     public String getEmail() {

@@ -11,3 +11,9 @@ date DATE not null,
 clientId varchar(36)
 )
 
+create table Admin (
+name varchar(50) not null,
+password varchar(50) not null,
+Id uniqueidentifier default newId()
+);
+

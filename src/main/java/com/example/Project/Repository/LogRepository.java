@@ -14,6 +14,24 @@ import java.util.List;
 import java.util.UUID;
 @Repository
 public class LogRepository implements LogInterface{
+    @Override
+    public List<Log> getLogs(String message, Integer logType, String firstDate, String secondDate, UUID logToken) {
+        String query = "";
+        if (message==null) {query = "SELECT * FROM LOGS WHERE logType='"+logType+"' AND dateOfLog BETWEEN '"+firstDate+"' AND '"+secondDate+"' AND token='"+logToken+"'";}
+        if (logType==null) {query = "SELECT * FROM LOGS WHERE message LIKE '%"+message+"%' AND dateOfLog BETWEEN '"+firstDate+"' AND '"+secondDate+"' AND token='"+logToken+"'";}
+        if (firstDate==null && secondDate==null) {query = "SELECT * FROM LOGS WHERE message LIKE'%"+message+"%' AND logType='"+logType+"' AND token='"+logToken+"'";}
+        if (message==null && logType==null) {query = "SELECT * FROM LOGS WHERE dateOfLog BETWEEN '"+firstDate+"' AND '"+secondDate+"' AND token='"+logToken+"'";}
+        if (message==null && firstDate==null && secondDate==null) {query = "SELECT * FROM LOGS WHERE logType='"+logType+"' AND token='"+logToken+"'";}
+        if (logType==null && firstDate==null && secondDate==null) {query = "SELECT * FROM LOGS WHERE message LIKE '%"+message+"%' AND token='"+logToken+"'";}
+        if (message!=null && logType!=null && firstDate!=null && secondDate!=null) {query = "SELECT * FROM LOGS WHERE [message] like '%"+message+"%' AND logType='"+logType+"' AND dateOfLog BETWEEN '"+firstDate+"' AND '"+secondDate+"'AND token='"+logToken+"'";}
+        if (message==null && logType==null && firstDate==null && secondDate==null) {query = "SELECT * FROM LOGS WHERE token='"+logToken+"'";}
+
+        return jdbcTemplate.query(
+                query,
+                BeanPropertyRowMapper.newInstance(Log.class)
+        );
+    }
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
