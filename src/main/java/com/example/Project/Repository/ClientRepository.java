@@ -25,7 +25,7 @@ public class ClientRepository implements ClientInterface {
         System.out.println(client);
         boolean condition = true;
         for (var user : listOfUsernames) {
-            if (user.getusername().equalsIgnoreCase(client.getusername())) {
+            if (user.getUsername().equalsIgnoreCase(client.getUsername())) {
                 condition = false;
                 break;
             }
@@ -46,7 +46,7 @@ public class ClientRepository implements ClientInterface {
             condition = false;
         }
         //Checking if username is longer than 3 characters
-        if (client.getusername().length() < 3) {
+        if (client.getUsername().length() < 3) {
             condition = false;
         }
 
@@ -67,7 +67,7 @@ public class ClientRepository implements ClientInterface {
 
 
         String sql = "Insert into Clients (username,email,Id,password) values ('"
-                + client.getusername() + "','" + client.getEmail() + "','" + UUID.randomUUID() + "','" + client.getPassword() + "')";
+                + client.getUsername() + "','" + client.getEmail() + "','" + UUID.randomUUID() + "','" + client.getPassword() + "')";
         jdbcTemplate.execute(sql);
 
 
@@ -75,24 +75,26 @@ public class ClientRepository implements ClientInterface {
 
     @Override
     public String returnToken(LogInModel logInModel) {
-        String sql="SELECT * FROM Clients";
+        String sql="select username as username, email as email, Id as uuid, password as password from Clients";
         List <Client> listOfClients=jdbcTemplate.query(sql,BeanPropertyRowMapper.newInstance(Client.class));
         for (var clients:listOfClients){
-            if (logInModel.getEmailOrUsername().equalsIgnoreCase(clients.getEmail())||logInModel.getEmailOrUsername().equalsIgnoreCase(clients.getusername())){
+            if (logInModel.getEmailOrUsername().equalsIgnoreCase(clients.getEmail())||logInModel.getEmailOrUsername().equalsIgnoreCase(clients.getUsername())){
                 return clients.getUuid().toString();
+
             }
         }
+
         return null;
     }
 
     @Override
     public boolean clientLogIn(LogInModel logInModel) {
-        String sql="SELECT * FROM Clients";
+        String sql="select username as username, email as email, Id as uuid, password as password from Clients";
         List <Client> listOfClients=jdbcTemplate.query(sql,BeanPropertyRowMapper.newInstance(Client.class));
         boolean condition=false;
         //Checking if username or email matches database,if so checking for matching passwords
         for (var clients :listOfClients){
-            if ((logInModel.getEmailOrUsername().equalsIgnoreCase(clients.getEmail())||logInModel.getEmailOrUsername().equalsIgnoreCase(clients.getusername()))&&logInModel.getPassword().equalsIgnoreCase(clients.getPassword())){
+            if ((logInModel.getEmailOrUsername().equalsIgnoreCase(clients.getEmail())||logInModel.getEmailOrUsername().equalsIgnoreCase(clients.getUsername()))&&logInModel.getPassword().equalsIgnoreCase(clients.getPassword())){
                 condition=true;
                 break;
             }
@@ -104,7 +106,7 @@ public class ClientRepository implements ClientInterface {
 
     @Override
     public List<Client> getallclients() {
-        String sql = "select username as username, email as email, Id as Id, password as password from Clients";
+        String sql = "select username as username, email as email, Id as uuid, password as password from Clients";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Client.class));
     }
 }

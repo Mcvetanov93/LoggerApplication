@@ -1,32 +1,27 @@
 package com.example.Project.Model;
 
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.UUID;
 
 
 public class Log {
-    public Log( String message, LogType logType) {
-        this.id = UUID.randomUUID();
+
+    private String message;
+    private LogType logType;
+    private LocalDate date;
+    private String clientId;
+
+    public Log(String message, LogType logType,  String clientId) {
         this.message = message;
         this.logType = logType;
-        this.date = LocalDate.now();
+        this.date=LocalDate.now();
+        this.clientId = clientId;
     }
 
     public Log() {
     }
-
-
-    private UUID id;
-    private String message;
-    private LogType logType;
-    private LocalDate date;
-
-    public UUID getId() {
-        return id;
-    }
-
-
 
     public String getMessage() {
         return message;
@@ -48,13 +43,15 @@ public class Log {
         return date;
     }
 
-    @Override
-    public String toString() {
-        return "Log{" +
-                "id=" + id +
-                ", message='" + message + '\'' +
-                ", logType=" + logType +
-                ", date=" + date +
-                '}';
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }
