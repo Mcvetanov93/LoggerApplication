@@ -1,50 +1,65 @@
 package com.example.Project.Repository;
 
-import com.example.Project.Model.Admin;
-import com.example.Project.Model.Client;
-import com.example.Project.Model.LogInModel;
-import com.example.Project.Model.Token;
+import com.example.Project.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Repository
-public class AdminRepository implements AdminInterface {
+public class AdminRepository implements AdminInterface, TokenValidator {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+
     @Override
     public List<Client> getAllUsers() {
-        String sql="select username as username, email as email, Id as uuid, password as password from Clients";
-        List<Client> list=jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Client.class));
-        return list;
+        String sql = "select username as username, email as email, Id as uuid, password as password from Clients";
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Client.class));
     }
 
     @Override
-    public boolean checkToken( Token token) {
-        String sql="select username as username, email as email, Id as uuid";
-        List <Admin> admin=jdbcTemplate.query(sql,BeanPropertyRowMapper.newInstance(Admin.class));
-        if(admin.get(0).getUuid().toString().equalsIgnoreCase(token.getToken())){
-            return  true;
+    public boolean checkToken(Token token) {
+        String sql = "select name as name, password as password, Id as uuid from Admin";
+        List<Admin> admin = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Admin.class));
+        if (admin.get(0).getUuid().toString().equalsIgnoreCase(token.getToken())) {
+            return true;
         }
         return false;
     }
 
     @Override
-    public String adminLogIn(LogInModel logInModel) {
-        String sql="select username as username, email as email, Id as uuid, ";
-        List <Admin> admin=jdbcTemplate.query(sql,BeanPropertyRowMapper.newInstance(Admin.class));
-        if (admin.get(0).getName().equalsIgnoreCase(logInModel.getEmailOrUsername())&&admin.get(0).getPassword().equalsIgnoreCase(logInModel.getPassword())){
+    public String adminLogIn(AdminLogInModel logInModel) {
+        String sql = "select name as name, password as password, Id as uuid from Admin  ";
+        List<Admin> admin = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Admin.class));
+        if (admin.get(0).getName().equalsIgnoreCase(logInModel.getName()) && admin.get(0).getPassword().equalsIgnoreCase(logInModel.getPassword())) {
             return admin.get(0).getUuid().toString();
         }
         return null;
     }
 
     @Override
-    public void adminChangeClientPassword( String Id,String newPassword) {
-        String sql="UPDATE Clients SET password = '"+newPassword+" ' WHERE Id = '"+Id +" ';";
+    public void adminChangeClientPassword(String Id, String newPassword) {
+        String sql = "UPDATE Clients SET password = '" + newPassword + " ' WHERE Id = '" + Id + " ';";
         jdbcTemplate.execute(sql);
 
     }
+
+    @Override
+    public boolean checkIfTokenIsValid(String Token) {
+        Pattern pattern =
+                Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+        Matcher matcher = pattern.matcher(Token);
+        if (matcher.matches()) {
+            return true;
+        } else
+            return false;
+    }
 }
+

@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ClientInterface {
+
     void registerClient(Client client);
     boolean clientLogIn (LogInModel logInModel);
     boolean checkForDuplicateUsername(Client client);

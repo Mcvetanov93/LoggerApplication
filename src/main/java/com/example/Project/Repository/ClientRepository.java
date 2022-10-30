@@ -104,6 +104,8 @@ public class ClientRepository implements ClientInterface {
        return condition;
     }
 
+
+
     @Override
     public List<Client> getallclients() {
         String sql = "select username as username, email as email, Id as uuid, password as password from Clients";

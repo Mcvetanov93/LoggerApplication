@@ -1,21 +1,15 @@
 package com.example.Project.Model;
 
-
-import java.util.UUID;
-
-public class Admin {
-
+public class AdminLogInModel {
     private String name;
     private String password;
-    private UUID uuid;
 
-    public Admin() {
-    }
-
-    public Admin(String name, String password,UUID uuid) {
+    public AdminLogInModel(String name, String password) {
         this.name = name;
         this.password = password;
-        this.uuid = uuid;
+    }
+
+    public AdminLogInModel() {
     }
 
     public String getName() {
@@ -34,20 +28,11 @@ public class Admin {
         this.password = password;
     }
 
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
     @Override
     public String toString() {
-        return "Admin{" +
+        return "AdminLogInModel{" +
                 "name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", uuid=" + uuid +
                 '}';
     }
 }
