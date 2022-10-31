@@ -7,29 +7,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
+
 @Repository
 public class LogRepository implements LogInterface{
     @Override
-    public List<Log> getLogs(String message, Integer logType, String firstDate, String secondDate, UUID logToken) {
-        String query = "";
-        if (message==null) {query = "SELECT * FROM LOGS WHERE logType='"+logType+"' AND dateOfLog BETWEEN '"+firstDate+"' AND '"+secondDate+"' AND token='"+logToken+"'";}
-        if (logType==null) {query = "SELECT * FROM LOGS WHERE message LIKE '%"+message+"%' AND dateOfLog BETWEEN '"+firstDate+"' AND '"+secondDate+"' AND token='"+logToken+"'";}
-        if (firstDate==null && secondDate==null) {query = "SELECT * FROM LOGS WHERE message LIKE'%"+message+"%' AND logType='"+logType+"' AND token='"+logToken+"'";}
-        if (message==null && logType==null) {query = "SELECT * FROM LOGS WHERE dateOfLog BETWEEN '"+firstDate+"' AND '"+secondDate+"' AND token='"+logToken+"'";}
-        if (message==null && firstDate==null && secondDate==null) {query = "SELECT * FROM LOGS WHERE logType='"+logType+"' AND token='"+logToken+"'";}
-        if (logType==null && firstDate==null && secondDate==null) {query = "SELECT * FROM LOGS WHERE message LIKE '%"+message+"%' AND token='"+logToken+"'";}
-        if (message!=null && logType!=null && firstDate!=null && secondDate!=null) {query = "SELECT * FROM LOGS WHERE [message] like '%"+message+"%' AND logType='"+logType+"' AND dateOfLog BETWEEN '"+firstDate+"' AND '"+secondDate+"'AND token='"+logToken+"'";}
-        if (message==null && logType==null && firstDate==null && secondDate==null) {query = "SELECT * FROM LOGS WHERE token='"+logToken+"'";}
+    public List<Log> getLogs(String message, String logType, String firstDate, String secondDate,String token) {
+        String sql="SELECT * FROM Log WHERE logType='"+logType+"' AND message LIKE '%"+message+"%' AND date BETWEEN '"+firstDate+"' AND '"+secondDate+"' AND clientId='"+token+"';";
+        if(message==null){
+            sql="SELECT * FROM Log WHERE logType='"+logType+"' AND date BETWEEN '"+firstDate+"' AND '"+secondDate+"' AND clientId='"+token+"';";
+        }
+        if(logType==null){
+            sql="SELECT * FROM Log WHERE message LIKE '%"+message+"%' AND date BETWEEN '"+firstDate+"' AND '"+secondDate+"' AND clientId='"+token+"';";
+        }
+        if (firstDate==null&&secondDate==null){
+            sql="SELECT * FROM Log WHERE message LIKE '%"+message+"%' AND logType='"+logType+"' AND clientId='"+token+"';";
+        }
+        if (message==null&&logType==null){
+            sql="SELECT * FROM Log WHERE date BETWEEN '"+firstDate+"' AND '"+secondDate+"' AND clientId='"+token+"';";
+        }
+        if (message==null&&firstDate==null&&secondDate==null){
+            sql="SELECT * FROM Log WHERE  logType='"+logType+"' AND clientId='"+token+"';";
+        }
+        if (logType==null&&firstDate==null&&secondDate==null){
+            sql="SELECT * FROM Log WHERE message LIKE '%"+message+"%' AND clientId='"+token+"';";
+        }
+        if (logType==null&&firstDate==null&&secondDate==null&&message==null){
+            sql="SELECT * FROM Log WHERE clientId='"+token+"';";
+        }
 
-        return jdbcTemplate.query(
-                query,
-                BeanPropertyRowMapper.newInstance(Log.class)
-        );
+        return jdbcTemplate.query(sql,BeanPropertyRowMapper.newInstance(Log.class));
     }
 
     @Autowired

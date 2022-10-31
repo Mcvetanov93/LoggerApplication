@@ -10,6 +10,8 @@ public class Client {
     private String email;
     private String password;
 
+    private int count;
+
     public Client(UUID uuid, String username, String email, String password, int count) {
         this.uuid = uuid;
         this.username = username;
@@ -18,11 +20,15 @@ public class Client {
         this.count = count;
     }
 
-    private int count;
+
 
 
 
     public Client() {
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public UUID getUuid() {

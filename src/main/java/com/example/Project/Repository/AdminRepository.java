@@ -2,8 +2,6 @@ package com.example.Project.Repository;
 
 import com.example.Project.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -20,7 +18,11 @@ public class AdminRepository implements AdminInterface, TokenValidator {
 
     @Override
     public List<Client> getAllUsers() {
-        String sql = "select username as username, email as email, Id as uuid, password as password from Clients";
+        String sql = "SELECT Clients.username as username,Clients.email as email, Clients.password as password,Clients.Id as uuid,  COUNT(Log.message) as count\n" +
+                "FROM Clients \n" +
+                "JOIN Log \n" +
+                "ON Clients.Id=Log.clientId \n" +
+                "GROUP BY Clients.username,Clients.email,Clients.password,Clients.Id";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Client.class));
     }
 

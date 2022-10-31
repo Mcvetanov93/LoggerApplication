@@ -11,5 +11,5 @@ import java.util.UUID;
 public interface LogInterface {
     void createLog(Log log, Token token);
     boolean checkToken(Token token);
-     List<Log> getLogs(String message, Integer logType, String firstDate, String secondDate, UUID logToken);
+     List<Log> getLogs(String message, String logType, String firstDate, String secondDate,String token);
 }
